@@ -1,0 +1,4 @@
+tensorflow>=2.3.1
+tqdm>=4.35.0
+fuzzywuzzy[speedup]
+git+https://github.com/matheusfsa/gpt-2-simple.git
