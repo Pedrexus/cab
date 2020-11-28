@@ -9,7 +9,6 @@ terraform {
 provider "aws" {
   profile = "default"
   region = "us-east-1"
-  version = "~> 3.6.0"
 }
 
 module "backend" {
@@ -17,4 +16,8 @@ module "backend" {
   tags = var.tags
 }
 
+module "model" {
+  source = "./services/model/deploy"
+  tags = var.tags
+}
 
