@@ -12,11 +12,11 @@ services:
 
   backend:
     build: 
-      context: ./backend/
+      context: ./services/backend/
       dockerfile: Dockerfile
     entrypoint: /start-reload.sh  # live reload for development
     volumes: 
-      - './backend/src:/app'
+      - './services/backend/src:/app'
     ports:
       - 8000:80
     links:
@@ -24,10 +24,10 @@ services:
 
   frontend:
     build:
-      context: ./frontend/
+      context: ./services/frontend/
       dockerfile: Dockerfile
     volumes:
-      - './frontend:/app'
+      - './services/frontend:/app'
       - '/app/node_modules'
     ports:
       - 3000:3000
