@@ -16,6 +16,13 @@ DATABASE_URL: DatabaseURL = config("DB_CONNECTION", cast=DatabaseURL)
 MAX_CONNECTIONS_COUNT: int = config("MAX_CONNECTIONS_COUNT", cast=int, default=10)
 MIN_CONNECTIONS_COUNT: int = config("MIN_CONNECTIONS_COUNT", cast=int, default=10)
 
+SONIC_URL = 'sonichost'
+SONIC_PORT = 1491
+SONIC_PASSWORD = 'SecretPassword'
+SONIC_MAX_CONNECTIONS = 100
+SONIC_COLLECTION = 'collection'
+SONIC_BUCKET = 'bucket'
+
 SECRET_KEY: Secret = config("SECRET_KEY", cast=Secret)
 
 ALLOWED_HOSTS: List[str] = config(

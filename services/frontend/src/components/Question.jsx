@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Loading} from "react-simple-chatbot";
 
 const makeURI = question => encodeURI(`http://localhost:8000/ask?question=${question}`)
+const impossibleAnswer = `I fear I cannot answer that...`
 
 export default function Question({steps, triggerNextStep}) {
   // this is what the user typed
@@ -13,7 +14,14 @@ export default function Question({steps, triggerNextStep}) {
     fetch(uri).then(response => {
       if (response.ok) {
         response.json().then(obj => {
-          setResult(obj.answer);
+          if (obj.impossible)
+          {
+            setResult(impossibleAnswer)
+          }
+          else
+          {
+            setResult(obj.answer);
+          }
         })
       }
     });

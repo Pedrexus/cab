@@ -1,6 +1,9 @@
+import logging
 import warnings
 
 from transformers import pipeline
+
+logger = logging.getLogger(__name__)
 
 
 class QuestionAnsweringRepository:
@@ -9,7 +12,11 @@ class QuestionAnsweringRepository:
         self.nlp = pipeline("question-answering")
 
     def answer(self, question, context):
+        if not context:
+            return {"impossible": True}
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             result = self.nlp(question=question, context=context)
+            logger.info({**result, "context": context})
             return {**result, "context": context}

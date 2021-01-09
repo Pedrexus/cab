@@ -2,17 +2,23 @@ import React from 'react';
 import "./App.css";
 import ChatBot from "react-simple-chatbot";
 import Question from "./components/Question.jsx";
-import RandomPhrase from "./components/BagOfPhrases.jsx";
 
-// TODO: add more phrases
 const bagOfPhrases = [
   `Ask me another one`,
   `Go on, ask again`,
   `I'm here all day... just for you`,
+  `Now ask me a hard one`,
   `Make me another question`,
   `Try me again`,
-  `Now ask me a hard one`,
 ]
+
+let index = 0
+function nextPhrase() {
+  const phrase = bagOfPhrases[index % bagOfPhrases.length]
+  index++
+
+  return phrase
+}
 
 const steps = [
   {
@@ -34,8 +40,7 @@ const steps = [
   },
   {
     id: '4',
-    asMessage: true,
-    component: <RandomPhrase options={bagOfPhrases} />,
+    message: nextPhrase(),
     trigger: 'question',
   },
 ];

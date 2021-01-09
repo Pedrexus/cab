@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import FastAPI, Path
 from fastapi.middleware.cors import CORSMiddleware
@@ -46,11 +46,11 @@ async def count_all_articles():
 
 
 @app.get('/articles/{pk}')
-async def get_article(pk: int = Path(..., ge=1)):
+async def get_article(pk: str = Path(...)):
     return await ArticleRepository().get(pk)
 
 
-@app.get('/articles/')
+@app.get('/find')
 async def find_article(text: str):
     return await ArticleRepository().find(text)
 
@@ -62,5 +62,8 @@ async def run_batch_create(articles: List[schemas.Article]):
 
 @app.get("/ask")
 async def ask_question(question: str):
-    context = ArticleRepository().find(question)
+    articles = await ArticleRepository().find(question)
+
+    # build context
+    context = "; ".join([f"{a.title}. {a.body}" for a in articles])
     return QuestionAnsweringRepository().answer(question, context)

@@ -4,9 +4,9 @@ from ..globals import Database
 
 
 class Article(Database.BaseTable):
-    __tablename__ = "users"
+    __tablename__ = "articles"
 
-    id = Column(Integer, primary_key=True, index=True)
+    uuid = Column(String, primary_key=True, index=True)
     title = Column(String)
     body = Column(String)
 
