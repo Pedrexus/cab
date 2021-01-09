@@ -4,33 +4,50 @@ services:
 
   sonic:
     image: valeriansaliou/sonic:v1.3.0
-    volumes:
-      - ./sonic/config.cfg:/etc/sonic.cfg
-      - ./sonic/store/:/var/lib/sonic/store/
     ports:
       - 1491:1491
+    volumes:
+      - ./services/sonic/config.cfg:/etc/sonic.cfg
+      - ./services/sonic/store/:/var/lib/sonic/store/
+
+  db:
+    image: postgres:12-alpine
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    # this was generating errors with asyncpg...
+    # volumes:
+    # - ./postgres-data:/var/lib/postgresql/data:cached
 
   backend:
     build: 
       context: ./services/backend/
       dockerfile: Dockerfile
+    restart: on-failure
     entrypoint: /start-reload.sh  # live reload for development
-    volumes: 
-      - './services/backend/src:/app'
     ports:
       - 8000:80
+    env_file:
+      - .env
+    volumes: 
+      - './services/backend/src:/app'
     links:
       - "sonic:sonichost"
+      - "db:postgreshost"
+    depends_on:
+      - sonic
+      - db
 
   frontend:
     build:
       context: ./services/frontend/
       dockerfile: Dockerfile
+    ports:
+      - 3000:3000
     volumes:
       - './services/frontend:/app'
       - '/app/node_modules'
-    ports:
-      - 3000:3000
     environment:
       - CHOKIDAR_USEPOLLING=true
     links:

@@ -3,7 +3,7 @@ import warnings
 # from transformers import pipeline
 
 # WARNING: this line downloads the BERT model SQuAD finetuned
-# nlp = pipeline("question-answering")
+nlp = pipeline("question-answering")
 
 
 def answer(question, context):

@@ -1,2 +1,5 @@
 asonic
-boto3
+asyncpg
+databases
+sqlalchemy>=1.4.0b1
+transformers[tf-cpu]

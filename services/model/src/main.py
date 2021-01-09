@@ -4,8 +4,6 @@ import sys
 import warnings
 import json
 
-# adds EFS Filesystem to our PYTHONPATH
-sys.path.append(os.environ['EFS_PIP_PATH'])
 from transformers import pipeline
 
 # WARNING: this line downloads the BERT model SQuAD finetuned

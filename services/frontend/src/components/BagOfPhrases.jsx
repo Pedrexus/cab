@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 
 function choose(choices) {
   const index = Math.floor(Math.random() * choices.length);
