@@ -10,14 +10,15 @@ import pandas as pd
 
 
 uri = 'http://localhost:8000/articles/batch'
-filename = "data.parquet"
-batch_size = 50
+filenames = ["aylien.parquet", "cord19.parquet"]
+batch_sizes = [20, 200]
 
-df = pd.read_parquet(filename)
-
-for i in tqdm(df.index[::batch_size]):
-    batch = df.iloc[i:i + batch_size].to_dict("records")
-    r = requests.post(uri, json=batch)
-    if r.status_code != 200:
-        print(f"error: {r.status_code}")
-    
+errors = 0
+for fn, bs in zip(filenames, batch_sizes):
+    df = pd.read_parquet(fn)
+    for i in tqdm(df.index[::bs]):
+        batch = df.iloc[i:i + bs].to_dict("records")
+        r = requests.post(uri, json=batch)
+        if r.status_code != 200:
+            errors += 1
+            print(f"errors: {errors}")

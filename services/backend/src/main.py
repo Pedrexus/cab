@@ -1,9 +1,7 @@
-from typing import List, Optional
+from typing import List
 
 from fastapi import FastAPI, Path
 from fastapi.middleware.cors import CORSMiddleware
-
-from tqdm import tqdm
 
 from core import settings
 from db import schemas
@@ -73,8 +71,9 @@ async def find_article(text: str):
 
 
 @app.post('/articles/batch')
-async def run_batch_create(articles: Optional[List[schemas.Article]] = None):
+async def run_batch_create(articles: List[schemas.Article]):
     return await ArticleRepository().batch_create(articles)
+
 
 @app.get("/ask")
 async def ask_question(question: str):
