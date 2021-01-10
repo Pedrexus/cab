@@ -74,26 +74,7 @@ async def find_article(text: str):
 
 @app.post('/articles/batch')
 async def run_batch_create(articles: Optional[List[schemas.Article]] = None):
-    if articles is not None:
-        return await ArticleRepository().batch_create(articles)
-
-    def read_file() -> List[schemas.Article]:
-        import parquet
-        with open("data.parquet", "rb") as f:
-            return [schemas.Article(**item) for item in parquet.DictReader(f, columns=['title', 'body'])]
-    
-
-    batch_size = 200
-    articles = read_file()
-
-    total = 0
-    for i in range(0, len(articles), batch_size):
-        batch = articles[i:i + batch_size]
-        total += await ArticleRepository().batch_create(articles)
-
-    return total
-    
-
+    return await ArticleRepository().batch_create(articles)
 
 @app.get("/ask")
 async def ask_question(question: str):

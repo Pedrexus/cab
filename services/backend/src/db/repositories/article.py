@@ -4,8 +4,6 @@ from asonic import Client
 from asonic.enums import Channel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from tqdm import tqdm
-
 from core.settings import SONIC_COLLECTION, SONIC_BUCKET
 from db.globals import Database, sonic_factory
 from .. import schemas, tables
@@ -61,20 +59,13 @@ class ArticleRepository:
         return await self.get_many([pk.decode('utf-8') for pk in pk_array])
 
     async def batch_create(self, articles: List[schemas.Article]):
-        await self.sonic.channel(Channel.INGEST)
-
-        items = []
-        for a in tqdm(articles):
-            try:
-                await self.push_node(a)
-            except:
-                continue
-            else:
-                items.append(tables.Article(**a.dict()))
-
         async with AsyncSession(self.engine) as session:
             async with session.begin():
-                session.add_all(items)
+                session.add_all([tables.Article(**a.dict()) for a in articles])
             await session.commit()
 
-        return len(items)
+        await self.sonic.channel(Channel.INGEST)
+        for a in articles:
+            await self.push_node(a)
+
+        return len(articles)
