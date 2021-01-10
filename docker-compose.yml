@@ -15,7 +15,7 @@ services:
     ports:
       - 5432:5432
     env_file:
-      - .env
+      - .env.example
     # this was generating errors with asyncpg...
     # volumes:
     # - ./postgres-data:/var/lib/postgresql/data:cached
@@ -29,7 +29,7 @@ services:
     ports:
       - 8000:80
     env_file:
-      - .env
+      - .env.example
     volumes: 
       - './services/backend/src:/app'
     links:
