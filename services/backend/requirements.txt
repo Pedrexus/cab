@@ -1,7 +1,6 @@
 asonic
 asyncpg
 databases
-parquet[snappy]
 sqlalchemy>=1.4.0b1
 transformers[flax]
 tqdm
