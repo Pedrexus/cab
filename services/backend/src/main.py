@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from fastapi import FastAPI, Path
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,6 +28,21 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await Database.disconnect()
+
+
+@app.post('/backup')
+async def backup():
+    await Database.backup()
+
+
+@app.post('/restore')
+async def restore():
+    await Database.restore()
+
+
+@app.post('/flush')
+async def flush():
+    await Database.flush()
 
 
 @app.post('/articles')

@@ -1,5 +1,5 @@
 from asonic import Client
-from asonic.enums import Channel
+from asonic.enums import Channel, Action
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 from sqlalchemy.orm import declarative_base
 
@@ -12,18 +12,38 @@ def sonic_factory():
 
 class Database:
     engine = create_async_engine(str(DATABASE_URL))
-    sonic = sonic_factory()
     BaseTable = declarative_base()
 
     @classmethod
     async def connect(cls):
         async with cls.engine.begin() as conn:
-            await conn.run_sync(cls.BaseTable.metadata.drop_all)
             await conn.run_sync(cls.BaseTable.metadata.create_all)
-
-        await cls.sonic.channel(Channel.INGEST)
-        await cls.sonic.flushc(SONIC_COLLECTION)
 
     @classmethod
     async def disconnect(cls):
+        await cls.backup()
         await cls.engine.dispose()
+
+    @classmethod
+    async def backup(cls):
+        sonic = sonic_factory()
+        await sonic.channel(Channel.CONTROL)
+        await sonic.trigger(Action.BACKUP)
+
+    @classmethod
+    async def restore(cls):
+        # FIXME: only CONSOLIDATE works
+        sonic = sonic_factory()
+        await sonic.channel(Channel.CONTROL)
+        await sonic.trigger(Action.RESTORE)
+
+    @classmethod
+    async def flush(cls):
+        """deletes all data from db and sonic"""
+        async with cls.engine.begin() as conn:
+            await conn.run_sync(cls.BaseTable.metadata.drop_all)
+            await conn.run_sync(cls.BaseTable.metadata.create_all)
+
+        sonic = sonic_factory()
+        await sonic.channel(Channel.INGEST)
+        await sonic.flushc(SONIC_COLLECTION)
