@@ -19,4 +19,6 @@ class QuestionAnsweringRepository:
             warnings.simplefilter("ignore")
             result = self.nlp(question=question, context=context)
             logger.info({**result, "context": context})
+            if results["score"] < .5:
+                return {"impossible": True}
             return {**result, "context": context}

@@ -18,7 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.on_event("startup")
 async def startup():
     await Database.connect()
@@ -75,10 +74,13 @@ async def run_batch_create(articles: List[schemas.Article]):
     return await ArticleRepository().batch_create(articles)
 
 
+qarepo = QuestionAnsweringRepository()
+
+
 @app.get("/ask")
 async def ask_question(question: str):
     articles = await ArticleRepository().find(question)
 
     # build context
     context = "; ".join([f"{a.title}. {a.body}" for a in articles])
-    return QuestionAnsweringRepository().answer(question, context)
+    return qarepo.answer(question, context)

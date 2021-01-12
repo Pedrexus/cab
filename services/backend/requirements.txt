@@ -2,5 +2,4 @@ asonic
 asyncpg
 databases
 sqlalchemy>=1.4.0b1
-transformers
-tqdm
+transformers[tf-cpu]
